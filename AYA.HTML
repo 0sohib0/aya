@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>حساب معدل S6</title>
+    <style>
+        :root {
+            --primary-color: #00897B; 
+            --bg-color: #f2f2f7; /* لون خلفية نظام iOS */
+            --card-bg: #ffffff;
+            --text-color: #1c1c1e;
+            --border-color: #c6c6c8;
+        }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* إزالة وميض اللمس في الآيفون */
+        }
+
+        body {
+            /* خطوط نظام الآيفون الافتراضية */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 90px; /* مساحة للزر العائم */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 { 
+            font-size: 1.4rem; 
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        h2 { 
+            font-size: 0.9rem; 
+            font-weight: normal; 
+            color: #8e8e93; 
+            margin-top: 0; 
+        }
+        
+        .module-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .module-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .coef-badge {
+            background-color: rgba(0, 137, 123, 0.1);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .inputs-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            color: #6c6c70;
+            font-weight: 500;
+        }
+
+        .input-field input {
+            /* إعدادات مخصصة لحقول سفاري/آيفون */
+            -webkit-appearance: none;
+            appearance: none;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            background-color: #fafafa;
+            transition: all 0.2s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.2);
+        }
+        
+        /* أزرار الإجراءات */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        button {
+            -webkit-appearance: none;
+            flex: 1;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-calc {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-calc:active {
+            background-color: #00695C;
+        }
+
+        .btn-reset {
+            background-color: #e5e5ea;
+            color: #ff3b30;
+            flex: 0.4;
+        }
+
+        .btn-reset:active {
+            background-color: #d1d1d6;
+        }
+        
+        #result-container {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 16px;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #result-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>انا او دصهيب ادعيولييييي يوفقني ربي فحياتي نطلع</h1>
+        <h1>حساب معدل S6 (إنجليزية)</h1>
+        <h2>جامعة محمد الصديق بن يحيى - جيجل</h2>
+    </div>
+
+    <div id="result-container">
+        <p style="margin: 0; font-size: 1rem; opacity: 0.8;">معدلك الفصلي</p>
+        <p id="result-text">0.00</p>
+    </div>
+
+    <div id="modules-container"></div>
+
+    <div class="bottom-bar">
+        <button class="btn-reset" onclick="resetFields()">مسح</button>
+        <button class="btn-calc" onclick="calculateAverage()">احسب المعدل</button>
+    </div>
+
+<script>
+    const modules = [
+        { id: 'ling', name: 'Linguistique 2', coef: 2, hasExam: true },
+        { id: 'litt', name: 'Littérature 2', coef: 2, hasExam: true },
+        { id: 'civ', name: 'Civilisation 2', coef: 2, hasExam: true },
+        { id: 'trad', name: 'Traduction 2', coef: 2, hasExam: true },
+        { id: 'didact', name: 'Didactique 2', coef: 2, hasExam: true },
+        { id: 'metho', name: 'Méthodologie 2', coef: 2, hasExam: true },
+        { id: 'lang', name: 'Langues de spécialités 2', coef: 1, hasExam: true },
+        { id: 'atelier', name: 'Atelier de lecture/écriture', coef: 2, hasExam: false }, 
+        { id: 'prat', name: 'Communication orale', coef: 1, hasExam: false }, 
+        { id: 'entre', name: 'Entreprenariat', coef: 1, hasExam: false } 
+    ];
+
+    const container = document.getElementById('modules-container');
+
+    modules.forEach(mod => {
+        let inputsHtml = `<div class="inputs-group">`;
+        
+        // استخدام inputmode="decimal" ليفتح كيبورد الأرقام في الآيفون
+        inputsHtml += `
+            <div class="input-field">
+                <label>التقويم المستمر ${mod.hasExam ? '40%' : '100%'}</label>
+                <input type="text" inputmode="decimal" id="td_${mod.id}" placeholder="0.00">
+            </div>
+        `;
+
+        if (mod.hasExam) {
+            inputsHtml += `
+                <div class="input-field">
+                    <label>الامتحان 60%</label>
+                    <input type="text" inputmode="decimal" id="exam_${mod.id}" placeholder="0.00">
+                </div>
+            `;
+        }
+
+        inputsHtml += `</div>`;
+
+        const card = document.createElement('div');
+        card.className = 'module-card';
+        card.innerHTML = `
+            <div class="module-title">
+                <span>${mod.name}</span>
+                <span class="coef-badge">معامل: ${mod.coef}</span>
+            </div>
+            ${inputsHtml}
+        `;
+        container.appendChild(card);
+    });
+
+    // دالة لتحويل النص المدخل إلى رقم يدعم الفاصلة (,) والنقطة (.)
+    function parseGrade(val) {
+        if (!val) return 0;
+        // استبدال الفاصلة بنقطة لكي تفهمها لغة الجافاسكريبت
+        let parsed = parseFloat(val.replace(',', '.'));
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function calculateAverage() {
+        let totalScore = 0;
+        let totalCoef = 0;
+
+        for (let mod of modules) {
+            let tdInput = document.getElementById(`td_${mod.id}`);
+            let examInput = document.getElementById(`exam_${mod.id}`);
+
+            let tdVal = parseGrade(tdInput ? tdInput.value : "");
+            let examVal = parseGrade(examInput ? examInput.value : "");
+
+            let moduleAverage = 0;
+
+            if (mod.hasExam) {
+                moduleAverage = (examVal * 0.6) + (tdVal * 0.4);
+            } else {
+                moduleAverage = tdVal;
+            }
+
+            totalScore += (moduleAverage * mod.coef);
+            totalCoef += mod.coef;
+        }
+
+        let finalAverage = totalScore / totalCoef;
+
+        const resultContainer = document.getElementById('result-container');
+        const resultText = document.getElementById('result-text');
+        
+        resultText.innerText = finalAverage.toFixed(2);
+        
+        if (finalAverage >= 10) {
+            resultContainer.style.backgroundColor = "#e4f8e6"; /* أخضر فاتح iOS */
+            resultContainer.style.color = "#34c759";
+        } else {
+            resultContainer.style.backgroundColor = "#ffebee"; /* أحمر فاتح */
+            resultContainer.style.color = "#ff3b30";
+        }
+        
+        resultContainer.style.display = "block";
+        
+        // التمرير التلقائي للأعلى لرؤية النتيجة
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetFields() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => input.value = '');
+        document.getElementById('result-container').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
